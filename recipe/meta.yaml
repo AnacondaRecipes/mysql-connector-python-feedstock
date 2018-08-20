@@ -1,6 +1,6 @@
 {% set name = "mysql-connector-python" %}
-{% set version = "8.0.11" %}
-{% set sha256 = "b6410ae31d5accc21aac046efe57544c2bd72e3005d78a26b3b4d3efbddce242" %}
+{% set version = "8.0.12" %}
+{% set sha256 = "32c2dc43830c82e5afcf7b9010a00dc9552924afb4c6f0992e8d035ba80cb1ef" %}
 
 package:
   name: {{ name|lower }}
@@ -10,11 +10,16 @@ source:
   fn: {{ name }}-{{ version }}.tar.gz
   url: https://github.com/mysql/mysql-connector-python/archive/{{ version }}.tar.gz
   sha256: {{ sha256 }}
+  patches:
+    - 0001-Typecast-password-to-const-char-explicitly-py3.patch
+    - 0002-Cast-uint-to-enum-mysql_enum_shutdown_level-explicit.patch
+    - 0003-Fix-py37-compatibility.patch
 
 build:
   number: 0
-  script: python setup.py install --with-protobuf-include-dir=$PREFIX/include --with-protobuf-lib-dir=$PREFIX/lib --with-protoc=$PREFIX/bin/protoc --with-mysql-capi=$PREFIX  # [unix]
-  script: python setup.py install --with-protobuf-include-dir=%LIBRARY_INC% --with-protobuf-lib-dir=%LIBRARY_LIB% --with-protoc=%LIBRARY_BIN%/protoc.exe --with-mysql-capi=%LIBRARY_PREFIX%  # [win]
+  # https://bugs.python.org/issue1222585
+  script: CC=$CXX CFLAGS=$CXXFLAGS python setup.py install --with-protobuf-include-dir=$PREFIX/include --with-protobuf-lib-dir=$PREFIX/lib --with-protoc=$PREFIX/bin/protoc --with-mysql-capi=$PREFIX  # [unix]
+  script: python setup.py install --with-protobuf-include-dir=%LIBRARY_INC% --with-protobuf-lib-dir=%LIBRARY_LIB% --with-protoc=%LIBRARY_BIN%/protoc.exe --with-mysql-capi=%LIBRARY_PREFIX% --extra-compile-args=/DPROTOBUF_USE_DLLS  # [win]
 
 
 requirements:
@@ -50,7 +55,7 @@ about:
 
   description: |
     MySQL Connector/Python is a standardized database driver for Python
-    platforms and development.  
+    platforms and development.
   doc_url: http://dev.mysql.com/doc/connector-python/en/index.html
   dev_url: https://github.com/mysql/mysql-connector-python
 
