@@ -1,0 +1,76 @@
+From 22331b18eb76ca622f0b72627f2bcddb39aedcc9 Mon Sep 17 00:00:00 2001
+From: Nehal J Wani <nehaljw.kkd1@gmail.com>
+Date: Sun, 19 Aug 2018 13:57:03 -0500
+Subject: [PATCH 3/3] Fix py37 compatibility
+
+src/mysqlxpb/python_cast.h:131:11: error: cannot initialize a variable of type
+'char *' with an rvalue of type 'const char *'
+    char* str = PyUnicode_AsUTF8AndSize(obj, &len);
+          ^     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/mysqlxpb/mysqlxpb.cc:669:13: error: cannot initialize a variable of type
+'char *' with an rvalue of type 'const char *'
+      char* type_name = PyString_AsString(type_name_obj);
+            ^           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/mysqlxpb/mysqlxpb.cc:684:23: error: cannot initialize a variable of type
+'char *' with an rvalue of type 'const char *'
+                char* key_name = PyString_AsString(key);
+                      ^          ~~~~~~~~~~~~~~~~~~~~~~
+---
+ lib/mysqlx/constants.py    | 2 +-
+ src/mysqlxpb/mysqlxpb.cc   | 4 ++--
+ src/mysqlxpb/python_cast.h | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/lib/mysqlx/constants.py b/lib/mysqlx/constants.py
+index 2da019b..7e9488b 100644
+--- a/lib/mysqlx/constants.py
++++ b/lib/mysqlx/constants.py
+@@ -43,7 +43,7 @@ def create_enum(name, fields, values=None):
+     Returns:
+         namedtuple: A namedtuple object.
+     """
+-    Enum = namedtuple(name, fields, verbose=False)
++    Enum = namedtuple(name, fields)
+     if values is None:
+         return Enum(*fields)
+     return Enum(*values)
+diff --git a/src/mysqlxpb/mysqlxpb.cc b/src/mysqlxpb/mysqlxpb.cc
+index f131804..ee9bb5a 100644
+--- a/src/mysqlxpb/mysqlxpb.cc
++++ b/src/mysqlxpb/mysqlxpb.cc
+@@ -666,7 +666,7 @@ static google::protobuf::Message* CreateMessage(PyObject* dict,
+     PyObject* type_name_obj = PyDict_GetItemString(dict, kMessageTypeKey);
+ 
+     if (type_name_obj && PyString_CheckExact(type_name_obj)) {
+-      char* type_name = PyString_AsString(type_name_obj);
++      const char* type_name = PyString_AsString(type_name_obj);
+       const google::protobuf::Descriptor* descriptor =
+           MessageDescriptorByName(type_name);
+ 
+@@ -681,7 +681,7 @@ static google::protobuf::Message* CreateMessage(PyObject* dict,
+ 
+             while (PyDict_Next(dict, &pos, &key, &value)) {
+               if (key && PyString_CheckExact(key)) {
+-                char* key_name = PyString_AsString(key);
++                const char* key_name = PyString_AsString(key);
+ 
+                 if (::strcmp(key_name, kMessageTypeKey) == 0)
+                   continue;
+diff --git a/src/mysqlxpb/python_cast.h b/src/mysqlxpb/python_cast.h
+index e28e065..e71c530 100644
+--- a/src/mysqlxpb/python_cast.h
++++ b/src/mysqlxpb/python_cast.h
+@@ -128,7 +128,7 @@ std::string python_cast<std::string>(PyObject* obj) {
+ #ifdef PY3
+   else if (PyUnicode_CheckExact(obj)) {
+     Py_ssize_t len;
+-    char* str = PyUnicode_AsUTF8AndSize(obj, &len);
++    const char* str = PyUnicode_AsUTF8AndSize(obj, &len);
+     return std::string(str, len);
+   } else if (PyBytes_CheckExact(obj)) {
+     return std::string(PyBytes_AsString(obj), PyBytes_Size(obj));
+-- 
+2.16.1
+
