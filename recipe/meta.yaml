@@ -32,7 +32,7 @@ requirements:
   host:
     - python
     - setuptools
-    - mysql-devel {{ version }}
+    - mysql-connector-c
     - libprotobuf
     - protobuf >=3.0.0
 
