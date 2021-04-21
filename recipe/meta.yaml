@@ -13,7 +13,8 @@ source:
   patches:
     - 0001-Typecast-password-to-const-char-explicitly-py3.patch
     - 0002-Cast-uint-to-enum-mysql_enum_shutdown_level-explicit.patch
-    - 0003-Don-t-error-out-if-get_git_info-fails.patch
+    - 0003-Fix-location-for-searching-mysql-headers-and-libs-on.patch
+    - 0004-Fix-indentation-for-common-flags.patch
 
 build:
   number: 1
@@ -31,13 +32,14 @@ requirements:
   host:
     - python
     - setuptools
-    - mysql-connector-c
+    - mysql-devel {{ version }}
     - libprotobuf
     - protobuf >=3.0.0
 
   run:
     - python
     - protobuf >=3.0.0
+    - dnspython >=1.16.0
 
 test:
   imports:
