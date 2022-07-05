@@ -22,7 +22,6 @@ build:
   script: python setup.py install --with-protobuf-include-dir=$PREFIX/include --with-protobuf-lib-dir=$PREFIX/lib --with-protoc=$PREFIX/bin/protoc --with-mysql-capi=$PREFIX  # [unix]
   script: python setup.py install --with-protobuf-include-dir=%LIBRARY_INC% --with-protobuf-lib-dir=%LIBRARY_LIB% --with-protoc=%LIBRARY_BIN%/protoc.exe --with-mysql-capi=%LIBRARY_PREFIX% --extra-compile-args=/DPROTOBUF_USE_DLLS  # [win]
 
-
 requirements:
   build:
     - {{ compiler('c') }}
@@ -37,7 +36,6 @@ requirements:
   run:
     - python
 
-
 test:
   imports:
     - mysql
@@ -45,14 +43,12 @@ test:
     - mysqlx
     - mysqlx.protobuf
 
-
 about:
   home: https://dev.mysql.com/doc/connector-python/en/
   license: GPL-2.0
   license_family: GPL
   license_file: LICENSE.txt
   summary: 'Python driver for communicating with MySQL servers'
-
   description: |
     MySQL Connector/Python is a standardized database driver for Python
     platforms and development.
