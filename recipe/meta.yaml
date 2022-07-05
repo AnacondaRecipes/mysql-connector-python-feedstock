@@ -29,17 +29,14 @@ requirements:
     - {{ compiler('cxx') }}
     - patch       # [not win]
     - m2-patch    # [win]
- 
   host:
     - python
     - setuptools
     - mysql-connector-c
-    - libprotobuf
-    - protobuf >=3.0.0
-
+    - protobuf
   run:
     - python
-    - protobuf >=3.0.0
+
 
 test:
   imports:
