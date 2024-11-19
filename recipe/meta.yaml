@@ -38,13 +38,13 @@ requirements:
     - pip
     - setuptools
     - mysql {{ version }}  # [not win]
-    - mysqlclient  # [win]
+    - pymysql  # [win]
     - protobuf 4.25.3
     - libprotobuf 4.25.3
   run:
     - python
     - mysql  # [not win]
-    - mysqlclient  # [win]
+    - pymysql  # [win]
     - protobuf
 
 test:
