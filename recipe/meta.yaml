@@ -23,7 +23,8 @@ build:
   # VS 2008 is not supported for libprotobuf
   skip: True  # [win and py2k]
   ignore_run_exports:
-    - libmysqlclient.so.*
+    - libprotobuf
+    - libstdcxx-ng
 
 requirements:
   build:
@@ -36,26 +37,23 @@ requirements:
     - python
     - pip
     - setuptools
-    - wheel
     - mysql {{ version }}
-    - libprotobuf
-    - protobuf >=3.0.0
-    - zlib
+    - protobuf 4.25.3
+    - libprotobuf 4.25.3
   run:
-    - mysql {{ version }}
     - python
-    - protobuf >=3.0.0
+    - mysql
+    - protobuf
 
 test:
   requires:
     - python
-    - pandas
+    - pip
   imports:
     - mysql
     - mysql.connector
-    # - mysqlx
-    - mysqlx.protobuf
-
+  commands:
+    - pip check
 
 about:
   home: https://dev.mysql.com/doc/connector-python/en/
@@ -67,7 +65,7 @@ about:
   description: |
     MySQL Connector/Python is a standardized database driver for Python
     platforms and development.
-  doc_url: http://dev.mysql.com/doc/connector-python/en/index.html
+  doc_url: https://dev.mysql.com/doc/connector-python/en/index.html
   dev_url: https://github.com/mysql/mysql-connector-python
 
 extra:
