@@ -60,6 +60,8 @@ test:
     - mysql.connector
   commands:
     - pip check
+    - test -e `find . -iname _mysql_connector.*.so`  # [not win]
+    # Not testing on windows as it's built without c extension due to lack of mysql package
 
 about:
   home: https://dev.mysql.com/doc/connector-python/en/
