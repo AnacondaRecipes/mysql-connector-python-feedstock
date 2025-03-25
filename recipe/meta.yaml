@@ -21,6 +21,7 @@ build:
   number: 2
   # VS 2008 is not supported for libprotobuf
   skip: True  # [py<38]
+  skip: True  # [linux and s390x]
   ignore_run_exports:
     - libprotobuf
     - libstdcxx-ng
