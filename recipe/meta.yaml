@@ -9,6 +9,8 @@ source:
   fn: {{ name }}-{{ version }}.tar.gz
   url: https://github.com/mysql/mysql-connector-python/archive/{{ version }}.tar.gz
   sha256: 68b4fab8f4cdfc765228335b28fa9da8e3353dfe77e74d12880d96dd6b9799e9
+  patches:
+    - patches/0002-Fix-location-for-searching-mysql-headers-and-libs-on.patch
 
 build:
   number: 0
